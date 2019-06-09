@@ -51,6 +51,15 @@ AV.Query.doCloudQuery(cql, []).then(function (data) {
 }, function (error) {
 });
 
+AV.Query.doCloudQuery('select * from Tips limit 5 order by -updatedAt').then(function (data){
+    var results = data.results;
+    results.forEach(t => {
+        $('#tips').append(`<span class="d-ib lh-0 bdrs-10em pY-15">${t.get('content')}</span>`);
+    });
+}, function (error){
+
+});
+
 const timeDelta = (date) => {
     delta = new Date().getTime() - date.getTime();
     return Math.floor(delta / 1000)
