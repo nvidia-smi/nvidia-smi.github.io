@@ -26,9 +26,14 @@ AV.Query.doCloudQuery(cql, []).then(function (data) {
     results.forEach(g => {
         $('#gpu-table').append(`<tr>
                         <td>${timeDelta(g.get('updatedAt')) > 1200 ? '<span class="badge bgc-red-50 c-red-700 p-10 lh-0 tt-c badge-pill">offline</span>' : (g.get('is_idle') ? '<span class="badge bgc-green-50 c-green-700 p-10 lh-0 tt-c badge-pill">idle</span>' : '<span class="badge bgc-orange-50 c-orange-700 p-10 lh-0 tt-c badge-pill">running</span>')}</td>
-                        <td>${g.get('name')}</td>
-                        <td class="fw-600">${g.get('load')}%</td>
-                        <td class="fw-600">${Math.round(g.get('memory_free')/ 1000) }GB /${Math.round(g.get('memory_total') / 1000)}GB</td>
+                        <td>${g.get('name').split("GeForce ").pop()}</td>
+                        <td>${g.get('load') * 100}%</td>
+                        <td>
+                        <small class="fw-600 c-grey-700">${Math.round((g.get('memory_total') - g.get('memory_free')) / 1000)}GB / ${Math.round(g.get('memory_total') / 1000)}GB </small><div class="progress mT-10">
+                        <div class="progress-bar ${ g.get('memory_free') / g.get('memory_total') > 0.7 ? 'bgc-green-500' : (g.get('memory_free') / g.get('memory_total') > 0.5 ? 'bgc-orange-500' : 'bgc-red-500')}" role="progressbar" aria-valuenow="50"
+                          aria-valuemin="0" aria-valuemax="100" style="width:${100 - g.get('memory_free') / g.get('memory_total') * 100}%"><span class="sr-only">50%
+                            Complete</span></div>
+                      </div></td>
                         <td>${g.get('temperature')}℃</td>
                         <td>${g.get('hostname')}: ${g.get('ip')}</td>
                         <td>${timeAgo(g.get('updatedAt'), i18n_set['en'])}</td>
