@@ -1,7 +1,7 @@
 var i18n_set = {
     'en': {
-        seconds: 'seconds ago',
-        minutes: 'minutes ago',
+        seconds: 's ago',
+        minutes: 'mins ago',
         hours: 'hours ago',
         days: 'days ago',
         now: 'just now',
@@ -18,6 +18,7 @@ else {
 }
 
 var cql = 'select * from GPU_';
+
 AV.Query.doCloudQuery(cql, []).then(function (data) {
     var results = data.results;
     var onl_num = 0;
@@ -47,7 +48,10 @@ AV.Query.doCloudQuery(cql, []).then(function (data) {
     $('#gpu-avail').html(`${onl_num} / ${results.length}`);
     hostnames = hostnames.filter((v, i, a) => a.indexOf(v) === i);
     hostnames_avail = hostnames_avail.filter((v, i, a) => a.indexOf(v) === i);
-    $('#hosts-online').html(`${hostnames_avail.length} / ${hostnames.length}`);
+    $('#hosts-online').html(`${hostnames_avail.length} / ${hostnames.length}`)
+
+    $('.sidebar-toggle').trigger('click');
+    setTimeout(function (){$('.sidebar-toggle').trigger('click');}, 500);
 }, function (error) {
 });
 
