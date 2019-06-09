@@ -1,0 +1,97 @@
+var i18n_set = {
+    'en': {
+        seconds: 'seconds ago',
+        minutes: 'minutes ago',
+        hours: 'hours ago',
+        days: 'days ago',
+        now: 'just now',
+    }
+}
+
+var { Query, User } = AV;
+if (getQueryVariable('id')) {
+    AV.init(getQueryVariable('id'), getQueryVariable('key'));
+
+}
+else {
+    window.location.href="signin.html";
+}
+
+var cql = 'select * from GPU_';
+AV.Query.doCloudQuery(cql, []).then(function (data) {
+    var results = data.results;
+    var onl_num = 0;
+    var hostnames = [];
+    var hostnames_avail = [];
+    results.forEach(g => {
+        $('#gpu-table').append(`<tr>
+                        <td>${timeDelta(g.get('updatedAt')) > 1200 ? '<span class="badge bgc-red-50 c-red-700 p-10 lh-0 tt-c badge-pill">offline</span>' : (g.get('is_idle') ? '<span class="badge bgc-green-50 c-green-700 p-10 lh-0 tt-c badge-pill">idle</span>' : '<span class="badge bgc-orange-50 c-orange-700 p-10 lh-0 tt-c badge-pill">running</span>')}</td>
+                        <td>${g.get('name')}</td>
+                        <td class="fw-600">${g.get('load')}%</td>
+                        <td class="fw-600">${Math.round(g.get('memory_free')/ 1000) }GB /${Math.round(g.get('memory_total') / 1000)}GB</td>
+                        <td>${g.get('temperature')}℃</td>
+                        <td>${g.get('hostname')}: ${g.get('ip')}</td>
+                        <td>${timeAgo(g.get('updatedAt'), i18n_set['en'])}</td>
+                        </tr>`)
+        if (timeDelta(g.get('updatedAt')) <= 1200) {
+            onl_num += 1;
+            hostnames_avail.push(g.get('hostname'));
+        }
+        hostnames.push(g.get('hostname'));        
+    });
+    $('#gpu-avail').html(`${onl_num} / ${results.length}`);
+    hostnames = hostnames.filter((v, i, a) => a.indexOf(v) === i);
+    hostnames_avail = hostnames_avail.filter((v, i, a) => a.indexOf(v) === i);
+    $('#hosts-online').html(`${hostnames_avail.length} / ${hostnames.length}`);
+}, function (error) {
+});
+
+const timeDelta = (date) => {
+    delta = new Date().getTime() - date.getTime();
+    return Math.floor(delta / 1000)
+}
+
+function getQueryVariable(variable)
+{
+       var query = window.location.search.substring(1);
+       var vars = query.split("&");
+       for (var i=0;i<vars.length;i++) {
+               var pair = vars[i].split("=");
+               if(pair[0] == variable){return pair[1];}
+       }
+       return(false);
+}
+
+const timeAgo = (date, i18n) => {
+    try {
+        var oldTime = date.getTime();
+        var currTime = new Date().getTime();
+        var diffValue = currTime - oldTime;
+
+        var days = Math.floor(diffValue / (24 * 3600 * 1000));
+        if (days === 0) {
+            //计算相差小时数
+            var leave1 = diffValue % (24 * 3600 * 1000); //计算天数后剩余的毫秒数
+            var hours = Math.floor(leave1 / (3600 * 1000));
+            if (hours === 0) {
+                //计算相差分钟数
+                var leave2 = leave1 % (3600 * 1000); //计算小时数后剩余的毫秒数
+                var minutes = Math.floor(leave2 / (60 * 1000));
+                if (minutes === 0) {
+                    //计算相差秒数
+                    var leave3 = leave2 % (60 * 1000); //计算分钟数后剩余的毫秒数
+                    var seconds = Math.round(leave3 / 1000);
+                    return seconds + ' ' +  i18n['seconds'];
+                }
+                return minutes + ' ' + i18n['minutes'];
+            }
+            return hours + ' ' + i18n['hours'];
+        }
+        if (days < 0)
+            return i18n['now'];
+        else
+            return days + ' ' + i18n['days'];
+    } catch (error) {
+        console.log(error)
+    }
+}
