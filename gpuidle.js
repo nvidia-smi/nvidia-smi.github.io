@@ -20,9 +20,8 @@ var i18n_set = {
 }
 
 var { Query, User } = AV;
-if (getQueryVariable('id')) {
+if (getQueryVariable('username')) {
     AV.init(getQueryVariable('username'), getQueryVariable('password'));
-
 }
 else {
     window.location.href="signin.html";
