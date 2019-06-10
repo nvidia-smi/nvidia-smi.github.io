@@ -63,6 +63,11 @@ AV.Query.doCloudQuery(cql, []).then(function (data) {
 
     if ($('.masonry').length > 0) {
         var container = $( '.masonry' );
+        container.masonry( {
+            itemSelector: '.masonry-item',
+            columnWidth: '.masonry-sizer',
+            percentPosition: true,
+        } );
         $( container ).masonry( 'reloadItems' );
         $( container ).masonry( 'layout' );
     }
