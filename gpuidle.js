@@ -27,7 +27,7 @@ else {
     window.location.href="signin.html";
 }
 
-var cql = 'select * from GPU_ order by -is_idle';
+var cql = 'select * from GPU_ order by -is_idle, load, host';
 
 AV.Query.doCloudQuery(cql, []).then(function (data) {
     var results = data.results;
