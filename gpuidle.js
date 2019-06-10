@@ -21,7 +21,7 @@ var i18n_set = {
 
 var { Query, User } = AV;
 if (getQueryVariable('id')) {
-    AV.init(getQueryVariable('id'), getQueryVariable('key'));
+    AV.init(getQueryVariable('username'), getQueryVariable('password'));
 
 }
 else {
