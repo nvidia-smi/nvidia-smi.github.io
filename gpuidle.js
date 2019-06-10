@@ -1,3 +1,14 @@
+window.addEventListener('load', () => {
+    if ($('.masonry').length > 0) {
+        var container = $( '.masonry' );
+        container.masonry( {
+            itemSelector: '.masonry-item',
+            columnWidth: '.masonry-sizer',
+            percentPosition: true,
+        } );
+    }
+});
+
 var i18n_set = {
     'en': {
         seconds: 's ago',
@@ -48,10 +59,14 @@ AV.Query.doCloudQuery(cql, []).then(function (data) {
     $('#gpu-avail').html(`${onl_num} / ${results.length}`);
     hostnames = hostnames.filter((v, i, a) => a.indexOf(v) === i);
     hostnames_avail = hostnames_avail.filter((v, i, a) => a.indexOf(v) === i);
-    $('#hosts-online').html(`${hostnames_avail.length} / ${hostnames.length}`)
+    $('#hosts-online').html(`${hostnames_avail.length} / ${hostnames.length}`);
 
-    $('.sidebar-toggle').trigger('click');
-    setTimeout(function (){$('.sidebar-toggle').trigger('click');}, 500);
+    if ($('.masonry').length > 0) {
+        var container = $( '.masonry' );
+        $( container ).masonry( 'reloadItems' );
+        $( container ).masonry( 'layout' );
+    }
+
 }, function (error) {
 });
 
