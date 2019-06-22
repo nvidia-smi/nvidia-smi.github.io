@@ -21,7 +21,12 @@ var i18n_set = {
 
 var { Query, User } = AV;
 if (getQueryVariable('username')) {
-    AV.init(getQueryVariable('username'), getQueryVariable('password'));
+    
+    AV.init({
+        appId: getQueryVariable('username'),
+        appKey: getQueryVariable('password'),
+        serverURLs: 'https://avoscloud.com'
+    });
 }
 else {
     window.location.href="signin.html";
