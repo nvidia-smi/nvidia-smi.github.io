@@ -32,7 +32,7 @@ else {
     window.location.href="signin.html";
 }
 
-var cql = 'select * from GPU_ order by -is_idle, load, hostname';
+var cql = 'select * from GPU_';
 
 AV.Query.doCloudQuery(cql, []).then(function (data) {
     var results = data.results;
