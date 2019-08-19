@@ -24,8 +24,7 @@ if (getQueryVariable('username')) {
     
     AV.init({
         appId: getQueryVariable('username'),
-        appKey: getQueryVariable('password'),
-        serverURLs: 'https://avoscloud.com'
+        appKey: getQueryVariable('password')
     });
 }
 else {
